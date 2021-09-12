@@ -23,6 +23,10 @@ spring:
 spring:
   profiles: dev
 
+  data:
+    mongodb:
+      uri: ${DB_URL:mongodb://root:rootpassword@localhost:27017/dice-simulations}
+
 ---
 spring:
   profiles: test

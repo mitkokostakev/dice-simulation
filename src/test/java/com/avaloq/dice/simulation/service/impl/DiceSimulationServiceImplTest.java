@@ -1,11 +1,14 @@
 package com.avaloq.dice.simulation.service.impl;
 
-import com.avaloq.dice.simulation.domain.DiceSimulationResponse;
+import com.avaloq.dice.simulation.domain.entity.DiceSimulation;
+import com.avaloq.dice.simulation.domain.repository.DiceSimulationRepository;
 import com.avaloq.dice.simulation.service.DiceSimulationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -13,14 +16,19 @@ import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @ContextConfiguration(classes = { DiceSimulationServiceImpl.class, ValidationAutoConfiguration.class})
+@MockBeans({ @MockBean(DiceSimulationRepository.class) })
 class DiceSimulationServiceImplTest {
 
     @Autowired
     private DiceSimulationService diceSimulationService;
+
+    @Autowired
+    private DiceSimulationRepository repository;
 
     @Test
     void testCreate() {
@@ -30,11 +38,21 @@ class DiceSimulationServiceImplTest {
         int sidesOfDice = 6;
         int numberOfRolls = 100;
 
+        DiceSimulation diceSimulation = DiceSimulation.builder()
+                .numberOfDices(numberOfDices)
+                .sidesOfDice(sidesOfDice)
+                .numberOfRolls(numberOfRolls)
+                .build();
+
+        when(repository.save(any(DiceSimulation.class))).thenReturn(diceSimulation);
+
         // When
-        DiceSimulationResponse diceSimulationResponse = diceSimulationService.create(numberOfDices, sidesOfDice, numberOfRolls);
+        DiceSimulation created = diceSimulationService.create(numberOfDices, sidesOfDice, numberOfRolls);
 
         // Then
-        assertNotNull(diceSimulationResponse);
+        assertNotNull(created);
+
+        verify(repository).save(any(DiceSimulation.class));
     }
 
     @Test

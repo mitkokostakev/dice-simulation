@@ -1,6 +1,7 @@
 package com.avaloq.dice.simulation.service.impl;
 
-import com.avaloq.dice.simulation.domain.DiceSimulationResponse;
+import com.avaloq.dice.simulation.domain.entity.DiceSimulation;
+import com.avaloq.dice.simulation.domain.repository.DiceSimulationRepository;
 import com.avaloq.dice.simulation.service.DiceSimulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +22,19 @@ public class DiceSimulationServiceImpl implements DiceSimulationService {
 
     private static final Random RANDOM = new Random();
 
+    private final DiceSimulationRepository repository;
+
     @Override
-    public DiceSimulationResponse create(@Min(value = 1) int numberOfDices, @Min(value = 4) int sidesOfDice,
+    public DiceSimulation create(@Min(value = 1) int numberOfDices, @Min(value = 4) int sidesOfDice,
                                          @Min(value = 1) int numberOfRolls) {
+        return repository.save(createDiceSimulation(numberOfDices, sidesOfDice, numberOfRolls));
+    }
+
+    private DiceSimulation createDiceSimulation(int numberOfDices, int sidesOfDice, int numberOfRolls) {
         log.info("Rolling dice simulation started for numberOfDices : {} sidesOfDice : {} and numberOfRolls {}",
                 numberOfDices, sidesOfDice, numberOfRolls);
 
-        final DiceSimulationResponse diceSimulationResponse = DiceSimulationResponse.builder()
+        final DiceSimulation diceSimulation = DiceSimulation.builder()
                 .numberOfDices(numberOfDices)
                 .numberOfRolls(numberOfRolls)
                 .sidesOfDice(sidesOfDice)
@@ -39,7 +46,7 @@ public class DiceSimulationServiceImpl implements DiceSimulationService {
                 .collect(Collectors.groupingBy(i -> i, Collectors.counting()));// Keep key/value pairs whose value > 1
 
         relativeDistributions.forEach((k, v) -> log.debug("For outcome : " + k + " count was :" + v));
-        diceSimulationResponse.setRelativeDistributions(relativeDistributions);
-        return diceSimulationResponse;
+        diceSimulation.setRelativeDistributions(relativeDistributions);
+        return diceSimulation;
     }
 }

@@ -1,7 +1,9 @@
 package com.avaloq.dice.simulation.api;
 
 import com.avaloq.dice.simulation.api.impl.DiceSimulationControllerV1;
-import com.avaloq.dice.simulation.domain.DiceSimulationResponse;
+import com.avaloq.dice.simulation.domain.dto.DiceSimulationResponse;
+import com.avaloq.dice.simulation.domain.entity.DiceSimulation;
+import com.avaloq.dice.simulation.domain.mapper.DiceSimulationMapper;
 import com.avaloq.dice.simulation.exception.dto.ErrorsDto;
 import com.avaloq.dice.simulation.service.DiceSimulationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +38,9 @@ class DiceSimulationControllerV1Test {
     @MockBean
     private DiceSimulationService diceSimulationService;
 
+    @MockBean
+    private DiceSimulationMapper mapper;
+
     @BeforeEach
     public void setUp() {
         objectMapper = new ObjectMapper();
@@ -48,10 +53,12 @@ class DiceSimulationControllerV1Test {
         int sidesOfDice = 6;
         int numberOfRolls = 100;
 
+        DiceSimulation diceSimulation = DiceSimulation.builder().build();
         DiceSimulationResponse diceSimulationResponse = DiceSimulationResponse.builder().build();
 
         when(diceSimulationService.create(numberOfDices, sidesOfDice, numberOfRolls))
-                .thenReturn(diceSimulationResponse);
+                .thenReturn(diceSimulation);
+        when(mapper.mapFromEntity(any())).thenReturn(diceSimulationResponse);
 
         // When
         MvcResult mvcResult =
@@ -75,6 +82,7 @@ class DiceSimulationControllerV1Test {
         assertEquals(diceSimulationResponse, response);
 
         verify(diceSimulationService).create(numberOfDices, sidesOfDice, numberOfRolls);
+        verify(mapper).mapFromEntity(any());
     }
 
     @Test

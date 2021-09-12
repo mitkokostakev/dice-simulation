@@ -1,10 +1,11 @@
-package com.avaloq.dice.simulation.domain;
+package com.avaloq.dice.simulation.domain.entity;
 
-import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Min;
 import java.util.Map;
@@ -13,10 +14,11 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(
-        value = "DiceSimulation",
-        description = "Record of Dice Simulation")
-public class DiceSimulationResponse {
+@Document
+public class DiceSimulation {
+
+    @Id
+    private String id;
 
     @Min(value = 1)
     private int numberOfDices;
@@ -28,5 +30,4 @@ public class DiceSimulationResponse {
     private int numberOfRolls;
 
     private Map<Integer, Long> relativeDistributions;
-
 }

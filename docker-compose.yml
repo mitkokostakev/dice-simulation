@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    networks:
+      - dice-simulation
+    volumes:
+      - mongodb_data_container:/data/db
+
+  app:
+    container_name: dice-simulation-app
+    build:
+      context: .
+    ports:
+      - 8080:8080
+    networks:
+      - dice-simulation
+
+volumes:
+  mongodb_data_container:
+
+networks:
+  dice-simulation:

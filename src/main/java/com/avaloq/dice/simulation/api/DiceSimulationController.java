@@ -1,6 +1,6 @@
 package com.avaloq.dice.simulation.api;
 
-import com.avaloq.dice.simulation.domain.DiceSimulationResponse;
+import com.avaloq.dice.simulation.domain.dto.DiceSimulationResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
