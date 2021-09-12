@@ -1,9 +1,28 @@
-spring:
-  profiles:
-    active: dev
+server:
+  port : ${SERVER_PORT:8080}
+
+logging:
+  level:
+    root: INFO
+    com:
+      avaloq:
+        dice:
+          simulation: ${LOG_LEVEL:INFO}
 
 management:
   endpoints:
     web:
       exposure:
         include: '*'
+
+spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
+
+---
+spring:
+  profiles: test

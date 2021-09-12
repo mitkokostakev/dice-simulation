@@ -1,4 +1,4 @@
-package com.avaloq.dice.simulation.api.dto;
+package com.avaloq.dice.simulation.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

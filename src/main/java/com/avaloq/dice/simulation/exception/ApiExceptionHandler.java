@@ -1,7 +1,7 @@
 package com.avaloq.dice.simulation.exception;
 
-import com.avaloq.dice.simulation.api.dto.ErrorDto;
-import com.avaloq.dice.simulation.api.dto.ErrorsDto;
+import com.avaloq.dice.simulation.exception.dto.ErrorDto;
+import com.avaloq.dice.simulation.exception.dto.ErrorsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
