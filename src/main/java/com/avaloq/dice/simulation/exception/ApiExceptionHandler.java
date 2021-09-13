@@ -19,9 +19,9 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ApiExceptionHandler {
 
     @ResponseStatus(NOT_FOUND)
-    @ExceptionHandler(EntityNotFoundException.class)
-    public void handleNotFound(EntityNotFoundException e) {
-        log.debug("Entity not found.", e);
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public void handleNotFound(ResourceNotFoundException e) {
+        log.error("Resource not found.", e);
     }
 
     @ResponseStatus(BAD_REQUEST)

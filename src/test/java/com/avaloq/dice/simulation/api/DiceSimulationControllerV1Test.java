@@ -1,6 +1,7 @@
 package com.avaloq.dice.simulation.api;
 
 import com.avaloq.dice.simulation.api.impl.DiceSimulationControllerV1;
+import com.avaloq.dice.simulation.domain.dto.DiceSimulationRelativeDistributionsResponse;
 import com.avaloq.dice.simulation.domain.dto.DiceSimulationResponse;
 import com.avaloq.dice.simulation.domain.entity.DiceSimulation;
 import com.avaloq.dice.simulation.domain.mapper.DiceSimulationMapper;
@@ -17,11 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
+import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,7 +60,7 @@ class DiceSimulationControllerV1Test {
         DiceSimulation diceSimulation = DiceSimulation.builder().build();
         DiceSimulationResponse diceSimulationResponse = DiceSimulationResponse.builder().build();
 
-        when(diceSimulationService.create(numberOfDices, sidesOfDice, numberOfRolls))
+        when(diceSimulationService.createAndSave(numberOfDices, sidesOfDice, numberOfRolls))
                 .thenReturn(diceSimulation);
         when(mapper.mapFromEntity(any())).thenReturn(diceSimulationResponse);
 
@@ -81,7 +85,7 @@ class DiceSimulationControllerV1Test {
         // Then
         assertEquals(diceSimulationResponse, response);
 
-        verify(diceSimulationService).create(numberOfDices, sidesOfDice, numberOfRolls);
+        verify(diceSimulationService).createAndSave(numberOfDices, sidesOfDice, numberOfRolls);
         verify(mapper).mapFromEntity(any());
     }
 
@@ -176,5 +180,44 @@ class DiceSimulationControllerV1Test {
         assertEquals("must be greater than or equal to 1", errorsDto.getErrors().get(0).getMessage());
 
         verifyNoInteractions(diceSimulationService);
+    }
+
+    @Test
+    void testQueryRelativeDistributions_NumberOfDices3_Sides6() throws Exception {
+        // Given
+        int numberOfDices = 3;
+        int sidesOfDice = 6;
+
+        final FileInputStream responseFis = new FileInputStream(
+                "src/test/resources/payloads/NumberOfDices3_SidesOfDice6_RelativeDistributionsResponse.json");
+        final String contentResponseJSON = IOUtils.toString(responseFis, "UTF-8");
+        final DiceSimulationRelativeDistributionsResponse expected = objectMapper.readValue(contentResponseJSON,
+                DiceSimulationRelativeDistributionsResponse.class);
+
+        when(diceSimulationService.queryRelativeDistributions(numberOfDices, sidesOfDice))
+                .thenReturn(expected);
+
+        // When
+        MvcResult mvcResult =
+                this.mockMvc
+                        .perform(
+                                get("/api/v1/simulations")
+                                        .param("numberOfDices", String.valueOf(numberOfDices))
+                                        .param("sidesOfDice", String.valueOf(sidesOfDice))
+                                        .characterEncoding(StandardCharsets.UTF_8.toString())
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .accept(MediaType.APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andReturn();
+        String contentResponse = mvcResult.getResponse().getContentAsString();
+
+        DiceSimulationRelativeDistributionsResponse response = objectMapper.readValue(contentResponse,
+                DiceSimulationRelativeDistributionsResponse.class);
+
+        // Then
+        assertEquals(expected, response);
+
+        verify(diceSimulationService).queryRelativeDistributions(numberOfDices, sidesOfDice);
     }
 }

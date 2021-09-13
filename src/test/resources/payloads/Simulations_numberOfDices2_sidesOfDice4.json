@@ -1,0 +1,44 @@
+[
+  {
+    "id": "613eaa726a6fd47e388a665c",
+    "numberOfDices": 2,
+    "sidesOfDice": 4,
+    "numberOfRolls": 13,
+    "relativeDistributions": {
+      "1": 2,
+      "2": 1,
+      "3": 2,
+      "5": 3,
+      "6": 1,
+      "7": 1,
+      "8": 3
+    }
+  },
+  {
+    "id": "613eaa766a6fd47e388a665d",
+    "numberOfDices": 2,
+    "sidesOfDice": 4,
+    "numberOfRolls": 13,
+    "relativeDistributions": {
+      "1": 3,
+      "3": 4,
+      "4": 2,
+      "5": 1,
+      "7": 2,
+      "8": 1
+    }
+  },
+  {
+    "id": "613eaa776a6fd47e388a665e",
+    "numberOfDices": 2,
+    "sidesOfDice": 4,
+    "numberOfRolls": 13,
+    "relativeDistributions": {
+      "1": 2,
+      "5": 4,
+      "6": 2,
+      "7": 2,
+      "8": 3
+    }
+  }
+]
